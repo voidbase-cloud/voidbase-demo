@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>voidbase demo</title>
+<meta name="description" content="A live voidbase instance running the unmodified PocketBase admin panel. The database is restored every hour." />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="/_/images/favicon.png" />
+<style>
+  :root { color-scheme: dark; --bg: #16161a; --bar: #232228; --ink: #e4e4e7; --ink-2: #a1a1aa; --line: #2e2d34; --accent: #7c7cf0; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; display: flex; flex-direction: column; background: var(--bg); color: var(--ink); font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .bar { flex: none; background: var(--bar); border-bottom: 1px solid var(--line); padding: 10px 16px; text-align: center; }
+  .bar p { margin: 0; color: var(--ink-2); }
+  .bar b { color: var(--ink); font-weight: 600; }
+  .bar a { color: var(--accent); }
+  .cred { display: inline-flex; align-items: center; gap: 6px; }
+  button.copy { border: 1px solid var(--line); background: transparent; color: var(--ink-2); border-radius: 4px; padding: 0 6px; font: inherit; font-size: 12px; cursor: pointer; }
+  button.copy:hover { color: var(--ink); border-color: var(--ink-2); }
+  iframe { flex: 1 1 auto; width: 100%; border: 0; background: var(--bg); }
+  @media (max-width: 720px) { .bar { font-size: 13px; text-align: left; } }
+</style>
+</head>
+<body>
+  <div class="bar">
+    <p>
+      This is a live demo of <a href="https://voidbase.cloud">voidbase</a>, PocketBase's API on Cloudflare Workers,
+      running the unmodified PocketBase admin panel. The database is restored every hour and file upload is disabled;
+      everything else, realtime included, works.
+      <br />
+      To sign in use
+      <span class="cred"><b id="email">test@example.com</b><button class="copy" data-copy="email" type="button">copy</button></span>
+      and
+      <span class="cred"><b id="password">demo123456</b><button class="copy" data-copy="password" type="button">copy</button></span>.
+    </p>
+  </div>
+  <iframe src="/_/#/login" title="voidbase admin panel"></iframe>
+  <script>
+    for (const button of document.querySelectorAll("button.copy")) {
+      button.addEventListener("click", async () => {
+        const text = document.getElementById(button.dataset.copy).textContent.trim();
+        try { await navigator.clipboard.writeText(text); button.textContent = "copied"; }
+        catch { button.textContent = "copy failed"; }
+        setTimeout(() => { button.textContent = "copy"; }, 1200);
+      });
+    }
+  </script>
+</body>
+</html>

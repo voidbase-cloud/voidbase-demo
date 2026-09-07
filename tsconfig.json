@@ -1,0 +1,13 @@
+{
+  "//": "The demo is its own project. Without this, a tool transforming files under demo/ walks up to the site's tsconfig, which extends the site's generated .voidbase/tsconfig.json and is not there unless the site was built.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": []
+  },
+  "include": ["pb_secrets", "pb_hooks"]
+}

@@ -1,0 +1,39 @@
+# demo.voidbase.cloud
+
+The public demo: a voidbase instance of its own, isolated from voidbase.cloud's, serving the unmodified PocketBase
+admin panel at `/_/` and a framed copy of it with the credentials at `/`.
+
+It is a **pb layout**, PocketBase's own structure, which is the point: nothing here is special to the site.
+
+```
+pb_hooks/demo-data.js   the schema (users, posts, messages, a messagesReport view) and the sample records
+pb_hooks/demo.pb.js     seeds an empty database, restores everything on the hour, refuses file uploads
+pb_secrets/main.ts      the deploy target and the published login, declared with defaults
+pb_public/index.html    the banner and the frame around the panel
+```
+
+The database is restored every hour by a hook cron (`$app.importCollections` with `deleteMissing`, then
+`truncateCollection` and a reseed), so a visitor may delete a collection, edit records or change the superuser
+password and the next reset undoes it. File upload is refused because the bucket is public.
+
+Run it locally:
+
+```bash
+bun run dev            # http://127.0.0.1:8095, panel at /_/
+```
+
+Deploy it (needs the deploy token in the environment or in `pb_secrets/secrets.json`):
+
+```bash
+bunx voidbase sync --name voidbase-demo --domain demo.voidbase.cloud
+```
+
+The target is named on the command line because the site's build environment carries its own
+`VOIDBASE_DEPLOY_NAME`; without it the deploy refuses rather than putting the demo on the site's Worker.
+
+A push to master deploys this too, from **its own** Cloudflare Workers Builds trigger on the `voidbase-demo` Worker
+(a build may only deploy the Worker its trigger belongs to, so the site's build cannot do it). `voidbase sync` from
+this directory creates that trigger; its deploy command steps in from the repository root.
+
+Sign in with `test@example.com` / `demo123456`. The password is a demo secret in name only: it is printed on the
+page, and every hour it goes back to this.

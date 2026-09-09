@@ -11,6 +11,6 @@
     "test": "bun test/live.ts"
   },
   "dependencies": {
-    "@voidbase-cloud/voidbase": "0.9.0-beta.15"
+    "@voidbase-cloud/voidbase": "0.9.0-beta.16"
   }
 }

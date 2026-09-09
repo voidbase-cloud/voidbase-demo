@@ -41,5 +41,7 @@ The demo runs the newest voidbase release on purpose: when a version is publishe
 [voidbase](https://github.com/voidbase-cloud/voidbase) pins it here (`chore(deps): voidbase <version>`) and that
 push deploys it. A regression is meant to show up here first, not in someone else's project.
 
+File uploads are behind the `DEMO_UPLOADS` feature flag (Cloudflare Flagship, off by default; the deploy creates it), so a maintainer can allow them for a while from the dashboard without a deploy.
+
 Sign in with `test@example.com` / `demo123456`. The password is a demo secret in name only: it is printed on the
 page, and every hour it goes back to this.

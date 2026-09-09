@@ -57,9 +57,9 @@ cronAdd("demo-reset", RESET_CRON, () => { reset(); });
 
 routerUse((e) => {
   ensureSeeded();
-  // this bucket is public: nobody uploads to it
+  // this bucket is public: nobody uploads to it, unless the DEMO_UPLOADS flag says so (a Flagship flag, evaluated per request)
   const type = e.c.req.header("content-type") || "";
-  if (type.indexOf("multipart/form-data") === 0 && e.c.req.method !== "GET") {
+  if (type.indexOf("multipart/form-data") === 0 && e.c.req.method !== "GET" && $os.getenv("DEMO_UPLOADS") !== "true") {
     throw new BadRequestError("File upload is disabled in this demo. Everything else works: try it on your own instance with `bunx voidbase sync`.");
   }
   return e.next();

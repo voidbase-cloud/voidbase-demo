@@ -1,17 +1,20 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "manifest": {
     "name": "echo",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "tier": "community",
-    "voidbase": "*"
+    "voidbase": ">=0.9.0-beta.15",
+    "collections": [
+      "echoes"
+    ]
   },
-  "integrity": "sha256-OQf2vXCbJn+W/gRCQ4xts7+Je9XMYERdfVgn70PPYZg=",
-  "bundle": "plugins/echo/0.1.0/bundle.js",
-  "bytes": 467,
+  "integrity": "sha256-tQYnEV2ePs/LCwPZYSDuZZM9nf0F+SZQgEXtMhnPVAo=",
+  "bundle": "plugins/echo/0.2.0/bundle.js",
+  "bytes": 861,
   "source": {
     "repository": "voidbase-cloud/voidbase-throwaway-marketplace",
-    "commit": "0000000000000000000000000000000000000000"
+    "commit": "c7b3ef7cb7b4363b52327c842140d79d0e9380ed"
   },
   "publishedOn": "2026-09-09",
   "audit": {
@@ -20,7 +23,7 @@
       {
         "name": "imports only what an instance provides",
         "passed": true,
-        "detail": "the bundle imports nothing"
+        "detail": "@voidbase-cloud/voidbase/kernel, @voidbase-cloud/voidbase/plugins/collections"
       }
     ]
   }

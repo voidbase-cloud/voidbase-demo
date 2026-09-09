@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "voidbase serve --dev --http 127.0.0.1:8095",
     "build": "echo 'demo: a PocketBase layout, nothing to build'",
-    "deploy": "voidbase sync --name voidbase-demo --domain demo.voidbase.cloud && bun test/live.ts",
+    "deploy": "voidbase sync --name voidbase-demo --domain demo.voidbase.cloud",
     "version": "voidbase secrets",
     "test": "bun test/live.ts"
   },

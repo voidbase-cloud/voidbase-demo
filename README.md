@@ -33,7 +33,13 @@ The target is named on the command line because the site's build environment car
 
 A push to master deploys this too, from **its own** Cloudflare Workers Builds trigger on the `voidbase-demo` Worker
 (a build may only deploy the Worker its trigger belongs to, so the site's build cannot do it). `voidbase sync` from
-this directory creates that trigger; its deploy command steps in from the repository root.
+this directory creates that trigger; its deploy command steps in from the repository root, and then runs
+`test/live.ts` against what it deployed (`bun test` runs the same from anywhere), so a deploy that breaks the demo
+fails its build.
+
+The demo runs the newest voidbase release on purpose: when a version is published, the release build in
+[voidbase](https://github.com/voidbase-cloud/voidbase) pins it here (`chore(deps): voidbase <version>`) and that
+push deploys it. A regression is meant to show up here first, not in someone else's project.
 
 Sign in with `test@example.com` / `demo123456`. The password is a demo secret in name only: it is printed on the
 page, and every hour it goes back to this.

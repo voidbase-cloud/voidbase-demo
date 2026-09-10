@@ -23,6 +23,16 @@
         "commit": "8d25c084b7fdcc46b2b4c374355ca39ce286ec49"
       },
       "installedOn": "2026-09-09"
+    },
+    "echo": {
+      "version": "0.1.0",
+      "integrity": "sha256-OQf2vXCbJn+W/gRCQ4xts7+Je9XMYERdfVgn70PPYZg=",
+      "marketplace": "https://raw.githubusercontent.com/voidbase-cloud/voidbase-throwaway-marketplace/master",
+      "source": {
+        "repository": "voidbase-cloud/voidbase-throwaway-marketplace",
+        "commit": "0000000000000000000000000000000000000000"
+      },
+      "installedOn": "2026-09-10"
     }
   },
   "disabled": []

@@ -35,7 +35,10 @@ A push to master deploys this too, from **its own** Cloudflare Workers Builds tr
 (a build may only deploy the Worker its trigger belongs to, so the site's build cannot do it). `voidbase sync` from
 this directory creates that trigger; the build is `bun run build` (nothing) and the deploy is `bun run deploy`
 (the sync), and that is the whole pipeline. `bun test` runs `test/live.ts` against the deployed demo when you want
-to check it by hand.
+to check it by hand. `bun run plugins` (`test/plugins.ts`, with `VOIDBASE_DEPLOY_CF_API_KEY`) is the plugin
+lifecycle on the demo itself: `voidbase plugins remove echo`, `add echo@0.1.0`, `update echo`, each followed by
+the deploy and checked live, ending with the repository byte for byte as it was. The demo is the testbed for that;
+no throwaway instance is created.
 
 The demo runs the newest voidbase release on purpose: when a version is published, the release build in
 [voidbase](https://github.com/voidbase-cloud/voidbase) pins it here (`chore(deps): voidbase <version>`) and that

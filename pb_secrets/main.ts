@@ -13,7 +13,10 @@ export default defineSecrets({
   // the demo is a project: its installer commits plugin changes to this repository, and the push deploys them
   VOIDBASE_PROJECT_REPO: server(string().default("voidbase-cloud/voidbase-demo"), "the repository the demo deploys from"),
   VOIDBASE_PROJECT_BRANCH: server(string().default("master"), "its branch"),
-  VOIDBASE_GH_TOKEN: secret(string().optional(), "a GitHub token with contents write on that repository, for the installer"),
+  // No GitHub token here, on purpose. With one, the panel's installer commits a plugin to the repository, the
+  // build deploys it, and the plugin runs with the Worker's env. This demo publishes its superuser login, so any
+  // visitor could run code of their choosing beside the Stripe keys. Without it the installer answers that this
+  // instance's plugins are fixed, and plugins change through a commit to the repository.
 
   // the published demo login, stored as this Worker's secrets like any superuser
   VOIDBASE_SUPERUSER_EMAIL: local(string().default("test@example.com"), "the demo superuser, printed on the page"),

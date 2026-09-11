@@ -24,6 +24,9 @@ export default defineSecrets({
   VOIDBASE_AI: local(string().default("1"), "Workers AI for the ai plugin; 1 means the default model"),
   VOIDBASE_TRANSLATABLE: server(string().default("posts:title,description"), "the fields the translations plugin swaps per locale"),
   VOIDBASE_LOCALES: server(string().default("en,ar,fr"), "the locales, source first, in fallback order"),
+  // the seo plugin: a sitemap over the posts, and page metadata plus a share card per post
+  VOIDBASE_SITEMAP: server(string().default("posts:/posts/{id}"), "the public records the sitemap lists, and the path each one has"),
+  VOIDBASE_SEO: server(string().default("posts:Article{title=title,description=description,datePublished=created,dateModified=updated}"), "what each post's page metadata and JSON-LD say"),
 
   // a feature flag, held by Cloudflare Flagship: the bucket is public, so uploads stay off unless someone turns
   // them on in the dashboard for a while, without a deploy

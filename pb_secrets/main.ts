@@ -1,7 +1,7 @@
 // The demo instance's configuration. Everything here is public on purpose: the credentials are printed on the page,
 // and the database is restored every hour. Declared with defaults so a fresh clone deploys the demo without a
 // secrets.json of its own; only the deploy token has to come from the environment.
-import { boolean, defineSecrets, flag, local, secret, server, string } from "@voidbase-cloud/voidbase/secrets";
+import { boolean, browser, defineSecrets, flag, local, secret, server, string } from "@voidbase-cloud/voidbase/secrets";
 
 export default defineSecrets({
   VOIDBASE_DEPLOY_NAME: local(string().default("voidbase-demo"), "the demo's own Worker, isolated from voidbase.cloud's"),
@@ -40,6 +40,18 @@ export default defineSecrets({
   // token below is what makes safe
   VOIDBASE_AUTH_COOKIE: server(string().default("1"), "the auth token as a cookie as well as a header"),
   VOIDBASE_CSRF: server(string().default("double-submit"), "the token a cookie-carrying write must send; a bearer token is exempt"),
+
+  // taking money, in Stripe's test mode: the secret key turns the stripe plugin on, the signing secret is the one
+  // Stripe gave the endpoint registered for https://demo.voidbase.cloud/api/payments/stripe/webhook, and the
+  // publishable key is the one a page using Stripe.js would read (the checkout redirect does not need it)
+  STRIPE_SECRET_KEY: secret(string(), "Stripe's test-mode secret key, which turns the stripe plugin on"),
+  STRIPE_WEBHOOK_SECRET: secret(string(), "the signing secret of the demo's Stripe webhook endpoint"),
+  STRIPE_PUBLISHABLE_KEY: browser(string().optional(), "Stripe's test-mode publishable key, for a page using Stripe.js"),
+
+  // an Analytics Engine data point per request, which the observability plugin summarises; the dataset needs no
+  // token to write, and the token to read it is deliberately not put here (a superuser on this public demo can
+  // install plugins, and a plugin runs with the Worker's env)
+  VOIDBASE_DEPLOY_ANALYTICS: local(boolean().default(true), "the Analytics Engine dataset the observability plugin writes to"),
 
   // the shop, so the demo carries a working one: a flat tax and a flat rate, free over a threshold
   VOIDBASE_COMMERCE: server(string().default("1"), "the shop's ten collections and its routes"),

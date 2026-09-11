@@ -40,10 +40,17 @@ function resetSuperuser() {
  * so neither the records nor the published login were put back.
  */
 function step(name, fn) {
-  try { fn(); return true; } catch (err) { console.log(`demo: reset step "${name}" failed: ${err}`); return false; }
+  try {
+    fn();
+    return null;
+  } catch (err) {
+    const error = String(err && err.message ? err.message : err) + (err && err.data ? " " + JSON.stringify(err.data) : "");
+    console.log(`demo: reset step "${name}" failed: ${error}`);
+    return { step: name, error: error };
+  }
 }
 
-/** The whole demo, back to how it ships: the superuser, the schema (visitor-made collections dropped), the records. */
+/** The whole demo, back to how it ships: the superuser, the schema (visitor-made collections dropped), the records. The steps that failed, if any. */
 function reset() {
   const results = [
     step("reset the superuser", resetSuperuser),
@@ -63,7 +70,9 @@ function reset() {
     if (!collection.system) results.push(step(`empty ${collection.name}`, () => $app.truncateCollection(collection)));
   }
   results.push(step("seed the records", seedRecords));
-  console.log(results.every(Boolean) ? "demo: reset" : "demo: reset, with a failed step logged above");
+  const failed = results.filter(Boolean);
+  console.log(failed.length ? `demo: reset, with ${failed.length} failed step(s) logged above` : "demo: reset");
+  return failed;
 }
 
 let checked = false;
@@ -75,6 +84,10 @@ function ensureSeeded() {
 }
 
 cronAdd("demo-reset", RESET_CRON, () => { reset(); });
+
+// The reset on demand, for a superuser. This demo publishes that login, so anyone may run it, and it does what the hour
+// does. The answer lists the steps that failed with their errors, which the cron's log line shows no visitor.
+routerAdd("POST", "/api/demo/reset", (e) => e.json(200, { failed: reset() }), $apis.requireSuperuserAuth());
 
 routerUse((e) => {
   ensureSeeded();

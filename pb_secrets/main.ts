@@ -19,6 +19,12 @@ export default defineSecrets({
   VOIDBASE_SUPERUSER_EMAIL: local(string().default("test@example.com"), "the demo superuser, printed on the page"),
   VOIDBASE_SUPERUSER_PASSWORD: local(string().default("demo123456"), "its password, printed on the page"),
 
+  // the plugins the demo shows off: Workers AI behind /api/ai/chat (the deploy adds the binding), and the posts
+  // collection answering in the reader's language
+  VOIDBASE_AI: local(string().default("1"), "Workers AI for the ai plugin; 1 means the default model"),
+  VOIDBASE_TRANSLATABLE: server(string().default("posts:title,description"), "the fields the translations plugin swaps per locale"),
+  VOIDBASE_LOCALES: server(string().default("en,ar,fr"), "the locales, source first, in fallback order"),
+
   // a feature flag, held by Cloudflare Flagship: the bucket is public, so uploads stay off unless someone turns
   // them on in the dashboard for a while, without a deploy
   DEMO_UPLOADS: flag(boolean().default(false), "whether file uploads are accepted; the bucket is open to the internet, so off unless somebody is watching"),

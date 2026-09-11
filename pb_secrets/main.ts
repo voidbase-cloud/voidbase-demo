@@ -41,6 +41,13 @@ export default defineSecrets({
   VOIDBASE_AUTH_COOKIE: server(string().default("1"), "the auth token as a cookie as well as a header"),
   VOIDBASE_CSRF: server(string().default("double-submit"), "the token a cookie-carrying write must send; a bearer token is exempt"),
 
+  // the shop, so the demo carries a working one: a flat tax and a flat rate, free over a threshold
+  VOIDBASE_COMMERCE: server(string().default("1"), "the shop's ten collections and its routes"),
+  VOIDBASE_COMMERCE_CURRENCY: server(string().default("usd"), "what the shop prices in"),
+  VOIDBASE_TAX_RATE: server(string().default("20"), "the one percentage tax-flat charges"),
+  VOIDBASE_SHIPPING_FLAT: server(string().default("500"), "the one rate shipping-flat offers, in minor units"),
+  VOIDBASE_SHIPPING_FREE_OVER: server(string().default("5000"), "the subtotal above which shipping is free"),
+
   // a feature flag, held by Cloudflare Flagship: the bucket is public, so uploads stay off unless someone turns
   // them on in the dashboard for a while, without a deploy
   DEMO_UPLOADS: flag(boolean().default(false), "whether file uploads are accepted; the bucket is open to the internet, so off unless somebody is watching"),

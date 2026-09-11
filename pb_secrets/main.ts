@@ -51,11 +51,10 @@ export default defineSecrets({
   STRIPE_WEBHOOK_SECRET: secret(string(), "the signing secret of the demo's Stripe webhook endpoint"),
   STRIPE_PUBLISHABLE_KEY: browser(string().optional(), "Stripe's test-mode publishable key, for a page using Stripe.js"),
 
-  // an Analytics Engine data point per request, which the observability plugin summarises. Off until Analytics
-  // Engine is enabled on the account (a dashboard step; a version upload with the binding fails with 10089 before
-  // then). The dataset needs no token to write, and the token to read it is deliberately not put here: a superuser
-  // on this public demo can install plugins, and a plugin runs with the Worker's env.
-  VOIDBASE_DEPLOY_ANALYTICS: local(boolean().default(false), "the Analytics Engine dataset the observability plugin writes to"),
+  // an Analytics Engine data point per request, which the observability plugin summarises. Analytics Engine was
+  // enabled on the account on 2026-09-11; before that a version upload with the binding failed with 10089. The
+  // dataset needs no token to write. The token to read it stays out of this Worker, like the GitHub token above.
+  VOIDBASE_DEPLOY_ANALYTICS: local(boolean().default(true), "the Analytics Engine dataset the observability plugin writes to"),
 
   // the shop, so the demo carries a working one: a flat tax and a flat rate, free over a threshold
   VOIDBASE_COMMERCE: server(string().default("1"), "the shop's ten collections and its routes"),

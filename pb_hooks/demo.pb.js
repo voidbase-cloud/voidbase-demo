@@ -34,43 +34,40 @@ function resetSuperuser() {
 }
 
 /**
- * One step of the reset. A step that throws is logged and the next one still runs. The superuser's password matters
- * most on a public demo, and it used to be reset last: on 2026-09-11 the import refused the posts collection every
- * hour from 14:00 UTC (a preview had added a system column the demo's list lacks), and nothing after the import ran,
- * so neither the records nor the published login were put back.
+ * The whole demo, back to how it ships: the superuser, the schema (visitor-made collections dropped), the records.
+ * Each step runs in its own try, so a step that throws is recorded and the next one still runs; the superuser's
+ * password, which matters most on a public demo, is reset first. The steps that failed are the answer.
+ *
+ * Every step is a direct call on purpose. The bundler makes a hook file's I/O awaited by rewriting it: a call to an
+ * $app method gets `await`, the function holding it becomes async, and so do the calls to that function by its name.
+ * A function handed over as a value and called through a parameter is invisible to that rewrite, so it runs without
+ * being awaited: its errors escape the try and its writes are cut off when the run ends. That is how the 18:00 UTC
+ * reset on 2026-09-11 saved one user and nothing else while reporting no failure.
  */
-function step(name, fn) {
-  try {
-    fn();
-    return null;
-  } catch (err) {
-    const error = String(err && err.message ? err.message : err) + (err && err.data ? " " + JSON.stringify(err.data) : "");
-    console.log(`demo: reset step "${name}" failed: ${error}`);
-    return { step: name, error: error };
-  }
-}
-
-/** The whole demo, back to how it ships: the superuser, the schema (visitor-made collections dropped), the records. The steps that failed, if any. */
 function reset() {
-  const results = [
-    step("reset the superuser", resetSuperuser),
-    // deleteMissing: a collection a visitor added is gone; what plugins own stays
-    step("import the demo's collections", () => $app.importCollections(demo.COLLECTIONS, true)),
-  ];
+  const failed = [];
+  const note = (step, err) => {
+    const error = String(err && err.message ? err.message : err) + (err && err.data ? " " + JSON.stringify(err.data) : "");
+    console.log(`demo: reset step "${step}" failed: ${error}`);
+    failed.push({ step: step, error: error });
+  };
+  try { resetSuperuser(); } catch (err) { note("reset the superuser", err); }
+  // deleteMissing: a collection a visitor added is gone; what plugins own stays
+  try { $app.importCollections(demo.COLLECTIONS, true); } catch (err) { note("import the demo's collections", err); }
   for (const name of demo.DEMO_NAMES) {
-    results.push(step(`empty ${name}`, () => {
+    try {
       const collection = $app.findCollectionByNameOrId(name);
       if (collection.type !== "view") $app.truncateCollection(collection);
-    }));
+    } catch (err) { note(`empty ${name}`, err); }
   }
   // the plugins' collections survive the import, so their rows are cleared here (carts, orders, payments,
   // conversations, translations); the auth plugin's system tables are left alone, and resetSuperuser puts back the
   // one that matters
   for (const collection of $app.findPluginCollections("base", "auth")) {
-    if (!collection.system) results.push(step(`empty ${collection.name}`, () => $app.truncateCollection(collection)));
+    if (collection.system) continue;
+    try { $app.truncateCollection(collection); } catch (err) { note(`empty ${collection.name}`, err); }
   }
-  results.push(step("seed the records", seedRecords));
-  const failed = results.filter(Boolean);
+  try { seedRecords(); } catch (err) { note("seed the records", err); }
   console.log(failed.length ? `demo: reset, with ${failed.length} failed step(s) logged above` : "demo: reset");
   return failed;
 }

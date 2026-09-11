@@ -36,6 +36,9 @@ export default defineSecrets({
   VOIDBASE_CROSS_ORIGIN: server(string().default("1"), "the embedder and resource policies beside the opener one"),
   VOIDBASE_CSP: server(string().default("default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'"), "the policy on every response"),
   VOIDBASE_CSP_ROUTES: server(string().default("/api/seo/og/*:default-src 'none'"), "a stricter policy on the share cards"),
+  // one session across a browser navigation and the API: the token also travels as a cookie, which the double-submit
+  // token below is what makes safe
+  VOIDBASE_AUTH_COOKIE: server(string().default("1"), "the auth token as a cookie as well as a header"),
   VOIDBASE_CSRF: server(string().default("double-submit"), "the token a cookie-carrying write must send; a bearer token is exempt"),
 
   // a feature flag, held by Cloudflare Flagship: the bucket is public, so uploads stay off unless someone turns

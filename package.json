@@ -12,6 +12,6 @@
     "plugins": "bun test/plugins.ts"
   },
   "dependencies": {
-    "@voidbase-cloud/voidbase": "0.9.0-beta.37"
+    "@voidbase-cloud/voidbase": "0.9.0-beta.38"
   }
 }

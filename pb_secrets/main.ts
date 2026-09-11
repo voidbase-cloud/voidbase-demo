@@ -29,6 +29,15 @@ export default defineSecrets({
   VOIDBASE_SEO_PNG: local(string().default("1"), "render the share cards as PNG; carries resvg's wasm into the Worker"),
   VOIDBASE_SEO: server(string().default("posts:Article{title=title,description=description,datePublished=created,dateModified=updated}"), "what each post's page metadata and JSON-LD say"),
 
+  // the hardening plugin's response policy, so the demo answers the headers a real instance should
+  VOIDBASE_HSTS: server(string().default("600"), "Strict-Transport-Security, kept short on the demo on purpose"),
+  VOIDBASE_REFERRER_POLICY: server(string().default("strict-origin-when-cross-origin"), "Referrer-Policy"),
+  VOIDBASE_PERMISSIONS_POLICY: server(string().default("camera=(), geolocation=(), microphone=()"), "Permissions-Policy"),
+  VOIDBASE_CROSS_ORIGIN: server(string().default("1"), "the embedder and resource policies beside the opener one"),
+  VOIDBASE_CSP: server(string().default("default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'"), "the policy on every response"),
+  VOIDBASE_CSP_ROUTES: server(string().default("/api/seo/og/*:default-src 'none'; sandbox"), "a stricter policy on the share cards"),
+  VOIDBASE_CSRF: server(string().default("double-submit"), "the token a cookie-carrying write must send; a bearer token is exempt"),
+
   // a feature flag, held by Cloudflare Flagship: the bucket is public, so uploads stay off unless someone turns
   // them on in the dashboard for a while, without a deploy
   DEMO_UPLOADS: flag(boolean().default(false), "whether file uploads are accepted; the bucket is open to the internet, so off unless somebody is watching"),

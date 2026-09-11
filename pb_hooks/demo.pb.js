@@ -35,10 +35,16 @@ function resetSuperuser() {
 
 /** The whole demo, back to how it ships: the schema (visitor-made collections dropped), the records, the superuser. */
 function reset() {
-  $app.importCollections(demo.COLLECTIONS, true); // deleteMissing: a collection a visitor added is gone
+  $app.importCollections(demo.COLLECTIONS, true); // deleteMissing: a collection a visitor added is gone; what plugins own stays
   for (const name of demo.DEMO_NAMES) {
     const collection = $app.findCollectionByNameOrId(name);
     if (collection.type !== "view") $app.truncateCollection(collection);
+  }
+  // the plugins' collections survive the import, so their rows are cleared here (carts, orders, payments,
+  // conversations, translations); the auth plugin's system tables are left alone, and resetSuperuser puts back the
+  // one that matters
+  for (const collection of $app.findPluginCollections("base", "auth")) {
+    if (!collection.system) $app.truncateCollection(collection);
   }
   seedRecords();
   resetSuperuser();

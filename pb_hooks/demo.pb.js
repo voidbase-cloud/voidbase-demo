@@ -8,10 +8,13 @@
 //     realtime included.
 //
 // The reset runs on Cloudflare's cron trigger (`cronAdd` below) and, for a database that has just been created, on
-// the first request.
+// the first request. All of it runs only on the demo's own deployment, which sets VOIDBASE_DEMO=1 (pb_secrets/main.ts):
+// a project started from this repository keeps what it creates. The check is made in each callback, because a
+// Worker's environment is there per request and per cron tick, not while the hooks load.
 const demo = require(`${__hooks}/demo-data.js`);
 
 const RESET_CRON = "0 * * * *"; // on the hour
+const isDemo = () => $os.getenv("VOIDBASE_DEMO") === "1";
 
 function seedRecords() {
   for (const u of demo.USERS) {
@@ -80,13 +83,17 @@ function ensureSeeded() {
   try { $app.findCollectionByNameOrId("posts"); } catch (err) { reset(); }
 }
 
-cronAdd("demo-reset", RESET_CRON, () => { reset(); });
+cronAdd("demo-reset", RESET_CRON, () => { if (isDemo()) reset(); });
 
 // The reset on demand, for a superuser. This demo publishes that login, so anyone may run it, and it does what the hour
 // does. The answer lists the steps that failed with their errors, which the cron's log line shows no visitor.
-routerAdd("POST", "/api/demo/reset", (e) => e.json(200, { failed: reset() }), $apis.requireSuperuserAuth());
+routerAdd("POST", "/api/demo/reset", (e) => {
+  if (!isDemo()) throw new NotFoundError("This instance is not the demo, so there is nothing to reset.");
+  return e.json(200, { failed: reset() });
+}, $apis.requireSuperuserAuth());
 
 routerUse((e) => {
+  if (!isDemo()) return e.next();
   ensureSeeded();
   // this bucket is public: nobody uploads to it, unless the DEMO_UPLOADS flag says so (a Flagship flag, evaluated per request)
   const type = e.c.req.header("content-type") || "";

@@ -36,5 +36,11 @@
       "installedOn": "2026-09-10"
     }
   },
-  "disabled": []
+  "disabled": [
+    "ai",
+    "commerce",
+    "lemonsqueezy",
+    "polar",
+    "stripe"
+  ]
 }

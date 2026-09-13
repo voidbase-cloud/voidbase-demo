@@ -5,26 +5,6 @@
     "https://raw.githubusercontent.com/voidbase-cloud/voidbase-throwaway-marketplace/master"
   ],
   "plugins": {
-    "auth": {
-      "version": "0.1.0",
-      "integrity": "sha256-+rAQs7f0IEWOs93BfCM4YWwHolJmtpruv4cJeNj7/Bg=",
-      "marketplace": "https://marketplace.voidbase.cloud",
-      "source": {
-        "repository": "voidbase-cloud/voidbase-plugin-auth",
-        "commit": "d6b412283359a7601b619e330a5cf3462d0bc978"
-      },
-      "installedOn": "2026-09-09"
-    },
-    "backups": {
-      "version": "0.1.0",
-      "integrity": "sha256-dVhukbfbNxX5sz/86h9PWMfX0en5e6mqD36kT9WgfNU=",
-      "marketplace": "https://marketplace.voidbase.cloud",
-      "source": {
-        "repository": "voidbase-cloud/voidbase-plugin-backups",
-        "commit": "8d25c084b7fdcc46b2b4c374355ca39ce286ec49"
-      },
-      "installedOn": "2026-09-09"
-    },
     "echo": {
       "version": "0.2.0",
       "integrity": "sha256-tQYnEV2ePs/LCwPZYSDuZZM9nf0F+SZQgEXtMhnPVAo=",
@@ -36,11 +16,5 @@
       "installedOn": "2026-09-10"
     }
   },
-  "disabled": [
-    "ai",
-    "commerce",
-    "lemonsqueezy",
-    "polar",
-    "stripe"
-  ]
+  "disabled": []
 }

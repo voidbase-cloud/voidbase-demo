@@ -1,5 +1,5 @@
-// The demo, for real: demo.voidbase.cloud runs the latest release with two installed plugins, one from our
-// marketplace and one from a throwaway one, and its superuser is public (the demo page prints it).
+// The demo, for real: demo.voidbase.cloud runs the latest release with the plugins it ships and one installed from a
+// throwaway marketplace, and its superuser is public (the demo page prints it).
 //   bun test/live.ts [--demo https://demo.voidbase.cloud]
 // The deploy runs it on itself (package.json `deploy`, which is what the Cloudflare build calls), so a deploy that
 // breaks the demo fails its build. The first requests give the fresh upload a minute to answer.
@@ -22,11 +22,12 @@ const token = ((await login.json()) as { token?: string }).token ?? "";
 check("the public demo superuser signs in", login.status === 200 && !!token, String(login.status));
 const plugins = await get("/api/plugins", token);
 const origins = (plugins.json?.origins ?? {}) as Record<string, string>;
-check("backups comes from our marketplace and takes the place of the shipped one", plugins.status === 200 && String(origins.backups).startsWith("https://marketplace.voidbase.cloud"), JSON.stringify(plugins.json).slice(0, 300));
+// backups ships with voidbase; the bundle our marketplace built from the archived repository was dropped (f63e7cc)
+check("backups ships with voidbase", plugins.status === 200 && origins.backups === "shipped", JSON.stringify(plugins.json).slice(0, 300));
 check("echo comes from the throwaway marketplace", String(origins.echo).startsWith("https://raw.githubusercontent.com/voidbase-cloud/voidbase-throwaway-marketplace"), JSON.stringify(origins));
 check("realtime and hardening still ship", origins.realtime === "shipped" && origins.hardening === "shipped", JSON.stringify(origins));
 const backups = await get("/api/backups", token);
-check("the installed backups plugin serves its routes", backups.status === 200 && Array.isArray(backups.json), String(backups.status));
+check("the backups plugin serves its routes", backups.status === 200 && Array.isArray(backups.json), String(backups.status));
 const stream = await fetch(`${DEMO}/api/realtime`, { headers: { ...ua, accept: "text/event-stream" }, signal: AbortSignal.timeout(4000) }).then(async (r) => (await r.body!.getReader().read()).value).then((v) => new TextDecoder().decode(v ?? new Uint8Array())).catch((e) => String(e));
 check("realtime connects", /PB_CONNECT/.test(stream), stream.slice(0, 80));
 console.log(`\n${pass} passed, ${fail} failed`);
